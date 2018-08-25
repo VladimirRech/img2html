@@ -9,8 +9,6 @@ namespace img2html.baselib
     public class imgconv
     {
         public string FileFullPath { get; set; }
-        public string LastError { get; set; }
-
         private Dictionary<string, ImageFormat> SupportedImg;
         private string extension;
 
@@ -31,7 +29,7 @@ namespace img2html.baselib
         {
             byte[] imgBytes = img2ByteArray();
 
-            while(imgBytes != null && imgBytes.Length > 0)
+            while (imgBytes != null && imgBytes.Length > 0)
             {
                 return string.Format("<img src=\"data:image/{0};base64,{1}\" />",
                     extension,
@@ -45,17 +43,14 @@ namespace img2html.baselib
         {
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                while (SupportedImg.ContainsKey(extension) && 
-                    memoryStream.Length == 0)
-                {
-                    var img = Image.FromFile(FileFullPath);
-                    img.Save(memoryStream, SupportedImg[extension]);
-                    return memoryStream.ToArray();
-                }
-            }
+                while (!SupportedImg.ContainsKey(extension))
+                    return null;
 
-            LastError = "Formato não suportado"; 
-            return null;
+                using (var img = Image.FromFile(FileFullPath))
+                    img.Save(memoryStream, SupportedImg[extension]);
+
+                return memoryStream.ToArray();
+            }
         }
     }
 }
