@@ -10,7 +10,16 @@ namespace img2html.demo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Usage:\n\timg2html <filename>");
+            while (args.Length == 0)
+            {
+                Console.WriteLine("Usage:\n\timg2html <filename>");
+                return;
+            }
+
+            string html = new img2html.baselib.imgconv(@args[0]).GetHtml();
+
+            Console.WriteLine(html != null && html.Length > 0 ?
+                html : "Não foi possível gerar a imagem");
         }
     }
 }
